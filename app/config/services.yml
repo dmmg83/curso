@@ -41,5 +41,6 @@ services:
 
     AppBundle\Services\JwtAuth:
         public: true
-        arguments:
+        arguments: 
             $manager: '@doctrine.orm.entity_manager'
+            $logger: '@logger'

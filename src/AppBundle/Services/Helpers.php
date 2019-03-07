@@ -17,7 +17,9 @@ class  Helpers
 
         $response = new \Symfony\Component\HttpFoundation\Response();
         $response->setContent($json);
+        $response->setCharset('UTF-8');
         $response->headers->set('Content-Type','application/json');
+        
 
         return $response;
     }
