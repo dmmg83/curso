@@ -8,6 +8,7 @@ class  Helpers
     public function __construct($manager){
         $this->manager= $manager;
     }
+    
     public function json($data){
         $normalizers = array(new \Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer());
         $encodres = array("json"=> new \Symfony\Component\Serializer\Encoder\JsonEncoder());

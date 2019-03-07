@@ -218,4 +218,9 @@ class Users
     {
         return $this->createdAt;
     }
+
+    public function __toString()
+    {
+        return $this->name;
+    }
 }

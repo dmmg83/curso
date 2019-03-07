@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Services\Helpers;
+use AppBundle\Services\JwtAuth;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -79,32 +80,38 @@ class DefaultController extends Controller
 
             $email = isset($params->email)?$params->email:null;
             $pass = isset($params->pass)?$params->pass:null;
+            $getHash = isset($params->getHash)?$params->getHash:false;
 
             $emailConstraint = new Assert\Email();
             $emailConstraint->message = "mail no válido";
             $validate_email = $this->get('validator')->validate($email,$emailConstraint);
 
-            if(count($validate_email)==0)
+            if(count($validate_email)==0 && isset($pass))
             {
+                
+                $jwt_auth = $this->get(JwtAuth::class);
+                $singup = $jwt_auth->singup($email,$pass,$getHash);
                 $data = array(
                     'status'=>'ok',
-                    'data'=>'ok'
+                    'data'=>$singup
                 );
             }
             else {
-                $data = array(
+                // $data = array(
+                //     'status'=>'error',
+                //     'data'=>$validate_email[0]->getMessage()
+                // );
+
+                 $data = array(
                     'status'=>'error',
-                    'data'=>$validate_email[0]->getMessage()
+                    'data'=>'Usuario o contraseña inválidos'
                 );
         
             }
 
           
         }
-        else {
-            # code...
-        }
-
+        //return $this->json($data);
         return $helpers->json($data);
     }
 }
