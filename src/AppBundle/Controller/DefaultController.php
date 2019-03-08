@@ -76,15 +76,9 @@ class DefaultController extends Controller
             // convierte json a objeto
             $params = json_decode($json);
 
-<<<<<<< HEAD
-            $email = isset($params->email)?$params->email:null;
-            $pass = isset($params->pass)?$params->pass:null;
-            $getHash = isset($params->getHash)?$params->getHash:null;
-=======
             $email = isset($params->email) ? $params->email : null;
             $pass = isset($params->pass) ? $params->pass : null;
             $getHash = isset($params->getHash) ? $params->getHash : true;
->>>>>>> c9439d182bb119c2b42991e8f074bbdb7a208142
 
             $emailConstraint = new Assert\Email();
             $emailConstraint->message = "mail no válido";

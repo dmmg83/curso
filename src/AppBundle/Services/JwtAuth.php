@@ -50,12 +50,13 @@ class JwtAuth
         return $data;
     }
 
-    public function checkToken($jwt){
+    public function checkToken($jwt, $identity=false){
 
         $auth=false;
         try {
             $decode=JWT::decode($jwt,$this->key,array('HS256'));
-            $auth=(is_object($decode)&&isset($decode->id));
+
+            $auth=!$identity? (is_object($decode)&&isset($decode->id)):$decode;
         } 
         catch (\UnexpectedValueException $th) {
             $auth=false;
