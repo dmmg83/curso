@@ -80,7 +80,7 @@ class DefaultController extends Controller
 
             $email = isset($params->email)?$params->email:null;
             $pass = isset($params->pass)?$params->pass:null;
-            $getHash = isset($params->getHash)?$params->getHash:false;
+            $getHash = isset($params->getHash)?$params->getHash:null;
 
             $emailConstraint = new Assert\Email();
             $emailConstraint->message = "mail no válido";
