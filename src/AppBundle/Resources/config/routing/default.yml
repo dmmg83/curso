@@ -17,3 +17,8 @@ default_login:
     path: /login
     defaults: { _controller: "AppBundle:Default:login" }
     methods: POST
+
+default_checkToken:
+    path: /checkToken
+    defaults: { _controller: "AppBundle:Default:checkToken" }
+    methods: POST
