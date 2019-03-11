@@ -28,16 +28,19 @@ Traits
 ------------------------
 Este traits incluidos, se pueden implementar en cualquier clase entidad de la siguiente forma:
 
-use Bundle\Clase; // namespaces de otras clases que usa la clase
- 
-class Users
 {
-  // uses de traits van dentro de la definición de la clase:
+  use Bundle\Clase; // namespaces de otras clases que usa la clase
+  
+  class Users
+  {
+    // uses de traits van dentro de la definición de la clase:
 
-    use \BackendBundle\Traits\PrePersistTrait; // trait que gestiona el callback del ciclo de vida de la entidad.
-    use \BackendBundle\Traits\GeneralTrait; // trait con el método para asignaciones automatizadas.
-    ....
+      use \BackendBundle\Traits\PrePersistTrait; // trait que gestiona el callback del ciclo de vida de la entidad.
+      use \BackendBundle\Traits\GeneralTrait; // trait con el método para asignaciones automatizadas.
+      ....
+  }
 }
+
 
 [PrePersistTrait]
 Contiene un método con la anotación @ORM\PrePersist que se ejecuta antes de que se llame al $em->persist($obj). 
@@ -49,25 +52,26 @@ El modo de uso es el siguiente:
 
 1. Se incluye en la clase la anotación * @ORM\HasLifecycleCallbacks()
 2. Se utiliza la instrucción use para usar el trait
-
-/**
- * Users
- *
- * @ORM\Table(name="users")
- * @ORM\Entity
- * @ORM\HasLifecycleCallbacks()
- */
-class Users
 {
-  use \BackendBundle\Traits\PrePersistTrait;
-  .....
+    /**
+    * Users
+    *
+    * @ORM\Table(name="users")
+    * @ORM\Entity
+    * @ORM\HasLifecycleCallbacks()
+    */
+    class Users
+    {
+      use \BackendBundle\Traits\PrePersistTrait;
+      .....
 
+    }
 }
 
 Funcionamiento:
 
-
-namespace BackendBundle\Traits;
+{
+    namespace BackendBundle\Traits;
 
     trait PrePersistTrait{
 
@@ -81,7 +85,7 @@ namespace BackendBundle\Traits;
         }
     }
 
-
+}
 [GeneralTrait]
 
 Este trait fue creado para incluir métodos comunes a todas las clases entidad. Sólo contiene un método llamado autoset.
@@ -114,6 +118,7 @@ Modo de uso:
 
 1. Incluir el trait en la entidad en la cual se va a usar:
 
+{
     // clase users del curso
     
     class Users
@@ -121,7 +126,7 @@ Modo de uso:
         use \BackendBundle\Traits\GeneralTrait;
         .....
     }
-
+}
 2. Dentro del trait modificar el atributo entityBundle con el nombre del Bundle donde están las entidades:
 
     // declaración del trait
