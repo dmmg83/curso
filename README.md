@@ -12,12 +12,14 @@ El método checkToken devuelve un objeto con dos propiedades:
 
 Modo de uso:
 
+```php
     $auth = $jwt->checkToken($token);
     if ($auth->valido) {
       #código...
       $id = $auth->usuario->id; // el id es el mismo que en el curso le llama 'sub'
       #código...
     }
+```
 
 [Cambios] 
 - Siempre retorna el identity si es válido, por lo que siempre estará disponible. Al ser un método que no tiene salida a través de un request no hay riesgos.
@@ -28,7 +30,7 @@ Traits
 ------------------------
 Este traits incluidos, se pueden implementar en cualquier clase entidad de la siguiente forma:
 
-
+```php
   use Bundle\Clase; // namespaces de otras clases que usa la clase
   
   class Users
@@ -39,7 +41,7 @@ Este traits incluidos, se pueden implementar en cualquier clase entidad de la si
       use \BackendBundle\Traits\GeneralTrait; // trait con el método para asignaciones automatizadas.
       ....
   }
-
+```
 
 
 [PrePersistTrait]
@@ -53,7 +55,7 @@ El modo de uso es el siguiente:
 1. Se incluye en la clase la anotación * @ORM\HasLifecycleCallbacks()
 2. Se utiliza la instrucción use para usar el trait:
 
-
+```php
     /**
     * Users
     *
@@ -67,11 +69,11 @@ El modo de uso es el siguiente:
       .....
 
     }
-
+```
 
 Funcionamiento:
 
-
+```php
     namespace BackendBundle\Traits;
 
     trait PrePersistTrait{
@@ -85,7 +87,7 @@ Funcionamiento:
             $this->createdAt = new \DateTime(); // asigna la fecha y hora actual al campo createat
         }
     }
-
+```
 
 
 [GeneralTrait]
@@ -96,7 +98,7 @@ El método autoset se encarga de realizar los set automáticamente sin tener que
 
 Antes:
 
-
+```php
     $email = (isset($json->email)) ? $json->email : null;
     $name = (isset($json->name)) ? $json->name : null;
     $surname = (isset($json->surname)) ? $json->surname : null;
@@ -110,17 +112,18 @@ Antes:
     $user->setPassword($password);
     $user->setRole($rol);
     $user->setSurname($surname);
-
+```
 Con autoSet:
-
+```php
     $user = new Users();
     $user->autoSet($json);
+```
 
 Modo de uso:
 
 1. Incluir el trait en la entidad en la cual se va a usar:
 
-{
+```php
     // clase users del curso
     
     class Users
@@ -128,15 +131,18 @@ Modo de uso:
         use \BackendBundle\Traits\GeneralTrait;
         .....
     }
-}
+```
+
 2. Dentro del trait modificar el atributo entityBundle con el nombre del Bundle donde están las entidades:
 
+```php
     // declaración del trait
     trait GeneralTrait{
         
         private $entityBundle='BackendBundle'; // la carpeta Entity está en BackendBundle
         ....
     }
+```
 
 3. Para llamar al método se requieren los parámetros:
 
@@ -146,7 +152,7 @@ Modo de uso:
 
 4. Luego de instanciar la entidad, se puede llamar la función como una función nativa de la entidad.
 
-{
+```php
     // creando una entidad....
 
     $usuario = new Usuario();
@@ -177,4 +183,4 @@ Modo de uso:
     $usuario->autoSet($json); //se asigna nombre sin problema
     $usuario->setNombre($nombre); //se reasigna nombre.
 
-}
+```
