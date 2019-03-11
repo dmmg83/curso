@@ -77,7 +77,8 @@ class DefaultController extends Controller
             $params = json_decode($json);
 
             $email = isset($params->email) ? $params->email : null;
-            $pass = isset($params->pass) ? hash('sha256',$params->pass) : null;
+            //$pass = isset($params->pass) ? hash('sha256',$params->pass) : null;
+            $pass = isset($params->pass) ? $params->pass : null;
             $getHash = isset($params->getHash) ? $params->getHash : true;
 
             $emailConstraint = new Assert\Email();
@@ -93,6 +94,7 @@ class DefaultController extends Controller
                     'status' => 'ok',
                     'data' => $singup,
                 );
+                
             } else {
                 // $data = array(
                 //     'status'=>'error',

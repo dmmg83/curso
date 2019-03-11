@@ -9,13 +9,12 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="users")
  * @ORM\Entity
- * @ORM\HasLifecycleCallbacks
+ * @ORM\HasLifecycleCallbacks()
  */
 class Users
 {
-    use \BackendBundle\Traits\FechaCreacion;
-
-    
+    use \BackendBundle\Traits\PrePersistTrait;
+    use \BackendBundle\Traits\GeneralTrait;
     /**
      * @var integer
      *

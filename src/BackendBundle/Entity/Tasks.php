@@ -7,11 +7,17 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Tasks
  *
- * @ORM\Table(name="tasks", indexes={@ORM\Index(name="fk_tasks_users", columns={"user_id"})})
+ * @ORM\Table(name="tasks", indexes={@ORM\Index(name="fk_tasks_users", columns={"fkiduser"})})
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks()
  */
 class Tasks
 {
+    use \BackendBundle\Traits\PrePersistTrait;
+    use \BackendBundle\Traits\PreUpdateTrait;
+    use \BackendBundle\Traits\GeneralTrait;
+
+    
     /**
      * @var integer
      *
@@ -61,10 +67,10 @@ class Tasks
      *
      * @ORM\ManyToOne(targetEntity="Users")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="fkiduser", referencedColumnName="id")
      * })
      */
-    private $user;
+    private $fkidusers;
 
 
 
@@ -199,26 +205,26 @@ class Tasks
     }
 
     /**
-     * Set user
+     * Set fkidusers
      *
-     * @param \BackendBundle\Entity\Users $user
+     * @param \BackendBundle\Entity\Users $fkidusers
      *
      * @return Tasks
      */
-    public function setUser(\BackendBundle\Entity\Users $user = null)
+    public function setFkidusers(\BackendBundle\Entity\Users $fkidusers = null)
     {
-        $this->user = $user;
+        $this->fkidusers = $fkidusers;
 
         return $this;
     }
 
     /**
-     * Get user
+     * Get fkidusers
      *
      * @return \BackendBundle\Entity\Users
      */
-    public function getUser()
+    public function getFkidusers()
     {
-        return $this->user;
+        return $this->fkidusers;
     }
 }

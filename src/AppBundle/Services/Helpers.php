@@ -10,6 +10,7 @@ class  Helpers
     }
     
     public function json($data){
+        
         $normalizers = array(new \Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer());
         $encodres = array("json"=> new \Symfony\Component\Serializer\Encoder\JsonEncoder());
         $serializer = new \Symfony\Component\Serializer\Serializer($normalizers, $encodres);
@@ -18,8 +19,7 @@ class  Helpers
         $response = new \Symfony\Component\HttpFoundation\Response();
         $response->setContent($json);
         $response->setCharset('UTF-8');
-        $response->headers->set('Content-Type','application/json');
-        
+        $response->headers->set('Content-Type','application/json');        
 
         return $response;
     }

@@ -1,72 +1,186 @@
-Symfony Standard Edition
-========================
+# Curso de Symfony de Udemy ![alt text](https://cdn0.iconfinder.com/data/icons/black-48x48-icons/48/Monkey.png "Solo código")
+==========================
 
-Welcome to the Symfony Standard Edition - a fully-functional Symfony
-application that you can use as the skeleton for your new applications.
+Se realizaron e incluyeron los siguientes cambios:
 
-For details on how to download and get started with Symfony, see the
-[Installation][1] chapter of the Symfony Documentation.
+Services/JwtAuth
+------------------------
+El método checkToken devuelve un objeto con dos propiedades:
 
-What's inside?
---------------
+ - Valido:  Determina si el token es válido o no.
+ - Usuario: Contiene el objeto con la información del usuario que está contenido dentro del token.
 
-The Symfony Standard Edition is configured with the following defaults:
+Modo de uso:
 
-  * An AppBundle you can use to start coding;
+```php
+    $auth = $jwt->checkToken($token);
+    if ($auth->valido) {
+      #código...
+      $id = $auth->usuario->id; // el id es el mismo que en el curso le llama 'sub'
+      #código...
+    }
+```
 
-  * Twig as the only configured template engine;
+[Cambios] 
+- Siempre retorna el identity si es válido, por lo que siempre estará disponible. Al ser un método que no tiene salida a través de un request no hay riesgos.
 
-  * Doctrine ORM/DBAL;
+- Se eliminó el parámetro identity.
 
-  * Swiftmailer;
+Traits
+------------------------
+Este traits incluidos, se pueden implementar en cualquier clase entidad de la siguiente forma:
 
-  * Annotations enabled for everything.
+```php
+  use Bundle\Clase; // namespaces de otras clases que usa la clase
+  
+  class Users
+  {
+    // uses de traits van dentro de la definición de la clase
 
-It comes pre-configured with the following bundles:
+      use \BackendBundle\Traits\PrePersistTrait; // trait que gestiona el callback del ciclo de vida de la entidad.
+      use \BackendBundle\Traits\GeneralTrait; // trait con el método para asignaciones automatizadas.
+      ....
+  }
+```
 
-  * **FrameworkBundle** - The core Symfony framework bundle
 
-  * [**SensioFrameworkExtraBundle**][6] - Adds several enhancements, including
-    template and routing annotation capability
+[PrePersistTrait]
+Contiene un método con la anotación @ORM\PrePersist que se ejecuta antes de que se llame al $em->persist($obj). 
+A través de este método se asigna la fecha de creación (CreatedAt).
 
-  * [**DoctrineBundle**][7] - Adds support for the Doctrine ORM
+El evento PrePersist se dispara siempre que se inserta, no cuando se actualiza.
 
-  * [**TwigBundle**][8] - Adds support for the Twig templating engine
+El modo de uso es el siguiente:
 
-  * [**SecurityBundle**][9] - Adds security by integrating Symfony's security
-    component
+1. Se incluye en la clase la anotación * @ORM\HasLifecycleCallbacks()
+2. Se utiliza la instrucción use para usar el trait:
 
-  * [**SwiftmailerBundle**][10] - Adds support for Swiftmailer, a library for
-    sending emails
+```php
+    /**
+    * Users
+    *
+    * @ORM\Table(name="users")
+    * @ORM\Entity
+    * @ORM\HasLifecycleCallbacks()
+    */
+    class Users
+    {
+      use \BackendBundle\Traits\PrePersistTrait;
+      .....
 
-  * [**MonologBundle**][11] - Adds support for Monolog, a logging library
+    }
+```
 
-  * **WebProfilerBundle** (in dev/test env) - Adds profiling functionality and
-    the web debug toolbar
+Funcionamiento:
 
-  * **SensioDistributionBundle** (in dev/test env) - Adds functionality for
-    configuring and working with Symfony distributions
+```php
+    namespace BackendBundle\Traits;
 
-  * [**SensioGeneratorBundle**][13] (in dev env) - Adds code generation
-    capabilities
+    trait PrePersistTrait{
 
-  * [**WebServerBundle**][14] (in dev env) - Adds commands for running applications
-    using the PHP built-in web server
+        /**
+        * @ORM\PrePersist <--- Al tener esta anotación el método siempre se llamará antes 
+        * de que sea llamado persist en la clase que use el trait
+        */
+        public function setCreatedAtValue()
+        {
+            $this->createdAt = new \DateTime(); // asigna la fecha y hora actual al campo createat
+        }
+    }
+```
 
-  * **DebugBundle** (in dev/test env) - Adds Debug and VarDumper component
-    integration
 
-All libraries and bundles included in the Symfony Standard Edition are
-released under the MIT or BSD license.
+[GeneralTrait]
 
-Enjoy!
+Este trait fue creado para incluir métodos comunes a todas las clases entidad. Sólo contiene un método llamado autoset.
 
-[1]:  https://symfony.com/doc/3.4/setup.html
-[6]:  https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/index.html
-[7]:  https://symfony.com/doc/3.4/doctrine.html
-[8]:  https://symfony.com/doc/3.4/templating.html
-[9]:  https://symfony.com/doc/3.4/security.html
-[10]: https://symfony.com/doc/3.4/email.html
-[11]: https://symfony.com/doc/3.4/logging.html
-[13]: https://symfony.com/doc/current/bundles/SensioGeneratorBundle/index.html
-[14]: https://symfony.com/doc/current/setup/built_in_web_server.html
+El método autoset se encarga de realizar los set automáticamente sin tener que programarlos explícitamente, sólo recibiendo el json:
+
+Antes:
+
+```php
+    $email = (isset($json->email)) ? $json->email : null;
+    $name = (isset($json->name)) ? $json->name : null;
+    $surname = (isset($json->surname)) ? $json->surname : null;
+    $password = (isset($json->password)) ? $json->password : null;
+    $rol = (isset($json->rol)) ? $json->rol : null;
+
+    $user = new Users();
+    
+    $user->setName($name);
+    $user->setEmail($email);
+    $user->setPassword($password);
+    $user->setRole($rol);
+    $user->setSurname($surname);
+```
+Con autoSet:
+```php
+    $user = new Users();
+    $user->autoSet($json);
+```
+
+Modo de uso:
+
+1. Incluir el trait en la entidad en la cual se va a usar:
+
+```php
+    // clase users del curso
+    
+    class Users
+    {
+        use \BackendBundle\Traits\GeneralTrait;
+        .....
+    }
+```
+
+2. Dentro del trait modificar el atributo entityBundle con el nombre del Bundle donde están las entidades:
+
+```php
+    // declaración del trait
+    trait GeneralTrait{
+        
+        private $entityBundle='BackendBundle'; // la carpeta Entity está en BackendBundle
+        ....
+    }
+```
+
+3. Para llamar al método se requieren los parámetros:
+
+  - json (Requerido):   objeto decodificado de json que contiene los atributos que se van a asignar. 
+  - em (opcional):      instancia de EntityManager. Requerido en caso de insertar un objeto con relación (fkid).
+  - ignorar (opcional): array con los nombres de los atributos que se deben ignorar en la asignación.
+
+4. Luego de instanciar la entidad, se puede llamar la función como una función nativa de la entidad.
+
+```php
+    // creando una entidad....
+
+    $usuario = new Usuario();
+    $usuario->autoSet($json);
+
+    // editando una entidad....
+
+    $usuario = $em->getRepository('Usuario')->find($pkidusuario);
+    $usuario->autoSet($json);
+
+    // creando una entidad con relación ....
+    
+    $em = $this->getDoctrine()->getManager();
+    $usuario = new Usuario();
+
+    // json contiene un atributo fkidrol el cual tiene un id (no un objeto) que apunta al pkid del rol
+    // que se asignará. el método autoset se encargará de buscarlo en la bd y asignarlo automáticamente.
+    // Para que pueda ser buscado debe pasarse la instancia de EntityManager ya existente.
+    
+    $usuario->autoSet($json, $em); 
+
+    //ignorando campos para evitar sobreescritura o errores:
+    //se ignorará (no serán asignados) dentro del método los campos permisos y password.
+    
+    $usuario->autoSet($json, null, array('permisos', 'password')); 
+
+    //gestionando lógica de los campos ya asignados:
+    $usuario->autoSet($json); //se asigna nombre sin problema
+    $usuario->setNombre($nombre); //se reasigna nombre.
+
+```
