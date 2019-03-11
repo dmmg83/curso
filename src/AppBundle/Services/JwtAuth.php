@@ -30,14 +30,12 @@ class JwtAuth
     'name' => $user->getName(),
     'iat' => time(),
     'exp' => time() + (7 * 24 * 60 * 60),
-    'geth' => $getHash,
+    'geth' => $getHash
    );
-
+   
    if ($getHash) {
     $data = JWT::encode($token, $this->key, 'HS256');
-   } else {
-    //$jwt=JWT::encode($token,$this->key,'HS256');
-    //$data=JWT::decode($jwt,$this->key,array('HS256'));
+   } else {    
     $data = $token;
    }
 
@@ -45,13 +43,20 @@ class JwtAuth
   return $data;
  }
 
- public function checkToken($jwt, $identity = false)
+ /**
+  * Valida el token
+  *
+  * @param $jwt
+  * @return objeto que contiene bandera de valido y el usuario
+  */
+ public function checkToken($jwt)
  {
 
+  //se crea un objeto para  que contendrá si es válido y el usuario.
   $auth = new class
 
   {
-   public $valido = false;
+   public $valido = false; 
    public $usuario = null;
   };
 
@@ -59,16 +64,13 @@ class JwtAuth
    $decode = JWT::decode($jwt, $this->key, array('HS256'));
    $auth->usuario =$decode;
 
-   $auth->valido = !$identity ? (is_object($decode) && isset($decode->id)) : $decode;
+   $auth->valido = (is_object($decode) && isset($decode->id));
 
   } catch (\UnexpectedValueException $th) {
-   $auth->valido = false;
    $this->logger->error('ERROR AUTHENTICACION: ' . $th->getMessage());
-  } catch (\DomainException $th) {
-   $auth->valido = false;
+  } catch (\DomainException $th) {   
    $this->logger->error('ERROR AUTHENTICACION: ' . $th->getMessage());
-  } catch (\Throwable $th) {
-   $auth->valido = false;
+  } catch (\Throwable $th) {   
    $this->logger->error('CheckToken Error: ' . $th->getMessage());
   }
   return $auth;

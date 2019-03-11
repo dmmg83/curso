@@ -2,3 +2,15 @@ task_new:
     path:     /new
     defaults: { _controller: AppBundle:Tasks:new }
     methods: POST
+task_edit:
+    path:     /edit
+    defaults: { _controller: AppBundle:Tasks:edit }
+    methods: POST
+task_remove:
+    path:     /remove
+    defaults: { _controller: AppBundle:Tasks:remove }
+    methods: POST
+task_listar:
+    path:     /listar
+    defaults: { _controller: AppBundle:Tasks:listar }
+    methods: POST

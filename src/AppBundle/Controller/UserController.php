@@ -39,7 +39,7 @@ class UserController extends Controller
     $data['excepcion'] = "correo no válido";
    } elseif ($name != null && $surname != null && $password != null) {
     $user = new Users();
-    $user->setCreatedAt($creacion);
+    //$user->setCreatedAt($creacion);
     $user->setName($name);
     $user->setEmail($email);
     $user->setPassword($password);
