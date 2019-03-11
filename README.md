@@ -65,7 +65,6 @@ class Users
 
 Funcionamiento:
 
-<?php
 
 namespace BackendBundle\Traits;
 
