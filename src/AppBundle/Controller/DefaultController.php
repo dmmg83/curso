@@ -77,14 +77,15 @@ class DefaultController extends Controller
             $params = json_decode($json);
 
             $email = isset($params->email) ? $params->email : null;
-            $pass = isset($params->pass) ? $params->pass : null;
+            $pass = isset($params->pass) ? hash('sha256',$params->pass) : null;
             $getHash = isset($params->getHash) ? $params->getHash : true;
 
             $emailConstraint = new Assert\Email();
             $emailConstraint->message = "mail no válido";
             $validate_email = $this->get('validator')->validate($email, $emailConstraint);
 
-            if (count($validate_email) == 0 && isset($pass)) {
+            
+            if (count($validate_email) == 0 && $pass != null) {
 
                 $jwt_auth = $this->get(JwtAuth::class);
                 $singup = $jwt_auth->singup($email, $pass, $getHash);

@@ -24,4 +24,7 @@ class  Helpers
         return $response;
     }
     
+    public function normalizarCadena(string $original): string{
+        return iconv('UTF-8', 'ASCII//TRANSLIT', $original);
+    }
 }

@@ -9,9 +9,13 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="users")
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
  */
 class Users
 {
+    use \BackendBundle\Traits\FechaCreacion;
+
+    
     /**
      * @var integer
      *
@@ -62,8 +66,6 @@ class Users
      * @ORM\Column(name="created_at", type="datetime", nullable=true)
      */
     private $createdAt;
-
-
 
     /**
      * Get id
@@ -223,4 +225,5 @@ class Users
     {
         return $this->name;
     }
+
 }
