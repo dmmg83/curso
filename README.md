@@ -68,17 +68,17 @@ Funcionamiento:
 
 namespace BackendBundle\Traits;
 
-trait PrePersistTrait{
+    trait PrePersistTrait{
 
-    /**
-     * @ORM\PrePersist <--- Al tener esta anotación el método siempre se llamará antes de que sea llamado persist en 
-     * la clase que use el trait
-     */
-    public function setCreatedAtValue()
-    {
-        $this->createdAt = new \DateTime(); // asigna la fecha y hora actual al campo createat
+        /**
+        * @ORM\PrePersist <--- Al tener esta anotación el método siempre se llamará antes de que sea llamado persist en 
+        * la clase que use el trait
+        */
+        public function setCreatedAtValue()
+        {
+            $this->createdAt = new \DateTime(); // asigna la fecha y hora actual al campo createat
+        }
     }
-}
 
 
 [GeneralTrait]
@@ -90,11 +90,11 @@ El método autoset se encarga de realizar los set automáticamente sin tener que
 Antes:
 
 
-   $email = (isset($json->email)) ? $json->email : null;
-   $name = (isset($json->name)) ? $json->name : null;
-   $surname = (isset($json->surname)) ? $json->surname : null;
-   $password = (isset($json->password)) ? $json->password : null;
-   $rol = (isset($json->rol)) ? $json->rol : null;
+    $email = (isset($json->email)) ? $json->email : null;
+    $name = (isset($json->name)) ? $json->name : null;
+    $surname = (isset($json->surname)) ? $json->surname : null;
+    $password = (isset($json->password)) ? $json->password : null;
+    $rol = (isset($json->rol)) ? $json->rol : null;
 
     $user = new Users();
     
@@ -106,25 +106,25 @@ Antes:
 
 Con autoSet:
 
-  $user = new Users();
-  $user->autoSet($json);
+    $user = new Users();
+    $user->autoSet($json);
 
 Modo de uso:
 
 1. Incluir el trait en la entidad en la cual se va a usar:
-class Users
-{
-    use \BackendBundle\Traits\GeneralTrait;
-    .....
-}
+    class Users
+    {
+        use \BackendBundle\Traits\GeneralTrait;
+        .....
+    }
 
 2. Dentro del trait modificar el atributo entityBundle con el nombre del Bundle donde están las entidades:
 
-trait GeneralTrait{
-    
-    private $entityBundle='BackendBundle'; // la carpeta Entity está en BackendBundle
-    ....
-}
+    trait GeneralTrait{
+        
+        private $entityBundle='BackendBundle'; // la carpeta Entity está en BackendBundle
+        ....
+    }
 
 3. Para llamar al método se requieren los parámetros:
   - json (Requerido):   objeto decodificado de json que contiene los atributos que se van a asignar. 
@@ -133,28 +133,28 @@ trait GeneralTrait{
 
 4. Luego de instanciar la entidad, se puede llamar la función como una función nativa de la entidad.
 
-  // creando una entidad....
-  $usuario = new Usuario();
-  $usuario->autoSet($json);
+    // creando una entidad....
+    $usuario = new Usuario();
+    $usuario->autoSet($json);
 
-  // editando una entidad....
-  $usuario = $em->getRepository('Usuario')->find($pkidusuario);
-  $usuario->autoSet($json);
+    // editando una entidad....
+    $usuario = $em->getRepository('Usuario')->find($pkidusuario);
+    $usuario->autoSet($json);
 
-  // creando una entidad con relación ....
-  
-  $em = $this->getDoctrine()->getManager();
-  $usuario = new Usuario();
-  // json contiene un atributo fkidrol el cual tiene un id (no un objeto) que apunta al pkid del rol
-  // que se asignará. el método autoset se encargará de buscarlo en la bd y asignarlo automáticamente.
-  // Para que pueda ser buscado debe pasarse la instancia de EntityManager ya existente.
-  $usuario->autoSet($json, $em); 
+    // creando una entidad con relación ....
+    
+    $em = $this->getDoctrine()->getManager();
+    $usuario = new Usuario();
+    // json contiene un atributo fkidrol el cual tiene un id (no un objeto) que apunta al pkid del rol
+    // que se asignará. el método autoset se encargará de buscarlo en la bd y asignarlo automáticamente.
+    // Para que pueda ser buscado debe pasarse la instancia de EntityManager ya existente.
+    $usuario->autoSet($json, $em); 
 
-  //ignorando campos para evitar sobreescritura o errores:
-  
-  //se ignorará (no serán asignados) dentro del método los campos permisos y password.
-  $usuario->autoSet($json, null, array('permisos', 'password')); 
+    //ignorando campos para evitar sobreescritura o errores:
+    
+    //se ignorará (no serán asignados) dentro del método los campos permisos y password.
+    $usuario->autoSet($json, null, array('permisos', 'password')); 
 
-  //gestionando lógica de los campos ya asignados:
-  $usuario->autoSet($json); //se asigna nombre sin problema
-  $usuario->setNombre($nombre); //se reasigna nombre.
+    //gestionando lógica de los campos ya asignados:
+    $usuario->autoSet($json); //se asigna nombre sin problema
+    $usuario->setNombre($nombre); //se reasigna nombre.
