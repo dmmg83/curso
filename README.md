@@ -10,13 +10,14 @@ El método checkToken devuelve un objeto con dos propiedades:
  - Valido:  Determina si el token es válido o no.
  - Usuario: Contiene el objeto con la información del usuario que está contenido dentro del token.
 
-Modo de uso
-$auth = $jwt->checkToken($token);
-if ($auth->valido) {
-  #código...
-  $id = $auth->usuario->id; // el id es el mismo que en el curso le llama 'sub'
-  #código...
-}
+Modo de uso:
+
+    $auth = $jwt->checkToken($token);
+    if ($auth->valido) {
+      #código...
+      $id = $auth->usuario->id; // el id es el mismo que en el curso le llama 'sub'
+      #código...
+    }
 
 [Cambios] 
 - Siempre retorna el identity si es válido, por lo que siempre estará disponible. Al ser un método que no tiene salida a través de un request no hay riesgos.
@@ -112,6 +113,9 @@ Con autoSet:
 Modo de uso:
 
 1. Incluir el trait en la entidad en la cual se va a usar:
+
+    // clase users del curso
+    
     class Users
     {
         use \BackendBundle\Traits\GeneralTrait;
@@ -120,6 +124,7 @@ Modo de uso:
 
 2. Dentro del trait modificar el atributo entityBundle con el nombre del Bundle donde están las entidades:
 
+    // declaración del trait
     trait GeneralTrait{
         
         private $entityBundle='BackendBundle'; // la carpeta Entity está en BackendBundle
@@ -127,17 +132,21 @@ Modo de uso:
     }
 
 3. Para llamar al método se requieren los parámetros:
+
   - json (Requerido):   objeto decodificado de json que contiene los atributos que se van a asignar. 
   - em (opcional):      instancia de EntityManager. Requerido en caso de insertar un objeto con relación (fkid).
   - ignorar (opcional): array con los nombres de los atributos que se deben ignorar en la asignación.
 
 4. Luego de instanciar la entidad, se puede llamar la función como una función nativa de la entidad.
 
+{
     // creando una entidad....
+
     $usuario = new Usuario();
     $usuario->autoSet($json);
 
     // editando una entidad....
+
     $usuario = $em->getRepository('Usuario')->find($pkidusuario);
     $usuario->autoSet($json);
 
@@ -145,16 +154,20 @@ Modo de uso:
     
     $em = $this->getDoctrine()->getManager();
     $usuario = new Usuario();
+
     // json contiene un atributo fkidrol el cual tiene un id (no un objeto) que apunta al pkid del rol
     // que se asignará. el método autoset se encargará de buscarlo en la bd y asignarlo automáticamente.
     // Para que pueda ser buscado debe pasarse la instancia de EntityManager ya existente.
+    
     $usuario->autoSet($json, $em); 
 
     //ignorando campos para evitar sobreescritura o errores:
-    
     //se ignorará (no serán asignados) dentro del método los campos permisos y password.
+    
     $usuario->autoSet($json, null, array('permisos', 'password')); 
 
     //gestionando lógica de los campos ya asignados:
     $usuario->autoSet($json); //se asigna nombre sin problema
     $usuario->setNombre($nombre); //se reasigna nombre.
+
+}
