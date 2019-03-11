@@ -28,18 +28,18 @@ Traits
 ------------------------
 Este traits incluidos, se pueden implementar en cualquier clase entidad de la siguiente forma:
 
-{
+
   use Bundle\Clase; // namespaces de otras clases que usa la clase
   
   class Users
   {
-    // uses de traits van dentro de la definición de la clase:
+    // uses de traits van dentro de la definición de la clase
 
       use \BackendBundle\Traits\PrePersistTrait; // trait que gestiona el callback del ciclo de vida de la entidad.
       use \BackendBundle\Traits\GeneralTrait; // trait con el método para asignaciones automatizadas.
       ....
   }
-}
+
 
 
 [PrePersistTrait]
@@ -51,8 +51,9 @@ El evento PrePersist se dispara siempre que se inserta, no cuando se actualiza.
 El modo de uso es el siguiente:
 
 1. Se incluye en la clase la anotación * @ORM\HasLifecycleCallbacks()
-2. Se utiliza la instrucción use para usar el trait
-{
+2. Se utiliza la instrucción use para usar el trait:
+
+
     /**
     * Users
     *
@@ -66,18 +67,18 @@ El modo de uso es el siguiente:
       .....
 
     }
-}
+
 
 Funcionamiento:
 
-{
+
     namespace BackendBundle\Traits;
 
     trait PrePersistTrait{
 
         /**
-        * @ORM\PrePersist <--- Al tener esta anotación el método siempre se llamará antes de que sea llamado persist en 
-        * la clase que use el trait
+        * @ORM\PrePersist <--- Al tener esta anotación el método siempre se llamará antes 
+        * de que sea llamado persist en la clase que use el trait
         */
         public function setCreatedAtValue()
         {
@@ -85,7 +86,8 @@ Funcionamiento:
         }
     }
 
-}
+
+
 [GeneralTrait]
 
 Este trait fue creado para incluir métodos comunes a todas las clases entidad. Sólo contiene un método llamado autoset.
