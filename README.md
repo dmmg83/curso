@@ -1,4 +1,5 @@
-Curso de Symfony de Udemy
+![alt text](https://cdn1.iconfinder.com/data/icons/smiley-line/50/evil-512.png "Solo código")
+#Curso de Symfony de Udemy
 ==========================
 
 Se realizaron e incluyeron los siguientes cambios:
