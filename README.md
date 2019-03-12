@@ -172,15 +172,19 @@ Modo de uso:
     // que se asignará. el método autoset se encargará de buscarlo en la bd y asignarlo automáticamente.
     // Para que pueda ser buscado debe pasarse la instancia de EntityManager ya existente.
     
-    $usuario->autoSet($json, $em); 
+    $usuario->autoSet($json, null, $em); 
 
     //ignorando campos para evitar sobreescritura o errores:
     //se ignorará (no serán asignados) dentro del método los campos permisos y password.
     
-    $usuario->autoSet($json, null, array('permisos', 'password')); 
+    $usuario->autoSet($json, null, null, array('permisos', 'password')); 
 
     //gestionando lógica de los campos ya asignados:
     $usuario->autoSet($json); //se asigna nombre sin problema
     $usuario->setNombre($nombre); //se reasigna nombre.
+
+    //validando campos requeridos que deben existir en el json:
+    $usuario->autoSet($json, array('cedula','nombre')); //valida que el json tenga al menos cedula y nombre.
+
 
 ```
